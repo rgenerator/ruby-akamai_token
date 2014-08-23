@@ -7,5 +7,6 @@ This code was extracted into a module form the Akamai Token v2 command line prog
 ## Usage
 
     require 'akamai_token'
+	
 	t = AkamaiToken.new(key)
 	puts t.create(:start_time => Time.now, :url => '/a/path', ...)

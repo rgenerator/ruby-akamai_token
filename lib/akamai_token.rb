@@ -5,7 +5,7 @@
 
 # Copyright (c) 2012, Akamai Technologies, Inc.
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
 #     * Redistributions of source code must retain the above copyright
@@ -16,7 +16,7 @@
 #     * Neither the name of Akamai Technologies nor the
 #       names of its contributors may be used to endorse or promote products
 #       derived from this software without specific prior written permission.
-# 
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 # ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -31,15 +31,20 @@
 require 'cgi'
 require 'openssl'
 
-module AkamaiToken
-  def self.create(config)
-    config = config.dup
+class AkamaiToken
+  def initialize(key)
+    raise ArgumentError, 'missing or invalid key' if !key.is_a?(String) || key.strip.empty?
+    @key = key
+  end
+
+  def create(config)
+    config = config.merge(:key => @key)
     setup(config)
     build_token(config)
   end
-  
+
   private
-  def self.setup(config)
+  def setup(config)
     if config[:start_time] != nil
       config[:start_time] = config[:start_time].to_i
     end
@@ -62,7 +67,7 @@ module AkamaiToken
     end
 
     if config[:key] == nil or config[:key].length < 1
-      raise ArgumentError, 'You must provide a secret in order to generate a token'        
+      raise ArgumentError, 'You must provide a secret in order to generate a token'
     end
 
     if config[:acl] == nil and config[:url] == nil
@@ -74,7 +79,7 @@ module AkamaiToken
     end
   end
 
-  def self.build_token(config)
+  def build_token(config)
     token_pieces = []
 
     if config[:ip] != nil
