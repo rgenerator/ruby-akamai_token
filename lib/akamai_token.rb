@@ -32,6 +32,7 @@ require 'cgi'
 require 'openssl'
 
 class AkamaiToken
+  VERSION = "0.0.1"
   ALGORITHMS =  %w[sha256 md5 sha1].freeze
 
   def initialize(key, defaults = {})
@@ -41,7 +42,8 @@ class AkamaiToken
   end
 
   def create(config)
-    config = config.merge(:key => @key)
+    config = @defaults.merge(config)
+    config[:key] = @key
     setup(config)
     build_token(config)
   end
@@ -49,6 +51,7 @@ class AkamaiToken
   private
   def setup(config)
     config[:token_name] ||= 'hdnts'
+    config[:acl_delimiter] ||= '!'
     config[:field_delimiter] ||= "~"
 
     config[:algo] ||= ALGORITHMS.first

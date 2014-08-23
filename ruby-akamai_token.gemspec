@@ -1,8 +1,9 @@
+require File.expand_path('lib') << '/akamai_token'
 require 'date'
 
 Gem::Specification.new do |s|
   s.name        = 'ruby-akamai_token'
-  s.version     = '0.0.1'
+  s.version     = AkamaiToken::VERSION
   s.date        = Date.today
   s.summary     = "Akamai Token v2 command line program, extracted into a Ruby module -no CLI!"
   #s.description =<<-DESC

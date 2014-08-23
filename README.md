@@ -7,6 +7,12 @@ This code was extracted into a module form the Akamai Token v2 command line prog
 ## Usage
 
     require 'akamai_token'
-	
+	require 'uri'
+
 	t = AkamaiToken.new(key)
-	puts t.create(:start_time => Time.now, :url => '/a/path', ...)
+	q = t.create(:start_time => Time.now, :url => '/assets/garth.flac')
+	uri = URI::HTTPS.build :host => 'rgnrtr.com', :path => '/assets/garth.flac', :query => q
+
+    # Or, set some defaults
+    t = AkamaiToken.new(key, defaults)
+	# ...
