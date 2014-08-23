@@ -32,9 +32,12 @@ require 'cgi'
 require 'openssl'
 
 class AkamaiToken
-  def initialize(key)
+  ALGORITHMS =  %w[sha256 md5 sha1].freeze
+
+  def initialize(key, defaults = {})
     raise ArgumentError, 'missing or invalid key' if !key.is_a?(String) || key.strip.empty?
     @key = key
+    @defaults = defaults
   end
 
   def create(config)
@@ -45,6 +48,12 @@ class AkamaiToken
 
   private
   def setup(config)
+    config[:token_name] ||= 'hdnts'
+    config[:field_delimiter] ||= "~"
+
+    config[:algo] ||= ALGORITHMS.first
+    raise ArgumentError, "algo must be one of #{ALGORITHMS.join(", ")}" unless ALGORITHMS.include?(config[:algo])
+
     if config[:start_time] != nil
       config[:start_time] = config[:start_time].to_i
     end
@@ -55,11 +64,11 @@ class AkamaiToken
       end
     else
       # Calculate the end time if it hasn't already been given a value.
-      if config[:window_secs] != nil
+      if config[:window] != nil
         if config[:start_time] == nil
-          config[:end_time] = Time.new.getgm.to_i + config[:window_secs].to_i
+          config[:end_time] = Time.new.getgm.to_i + config[:window].to_i
         else
-          config[:end_time] = config[:start_time].to_i + config[:window_secs].to_i
+          config[:end_time] = config[:start_time].to_i + config[:window].to_i
         end
       else
         raise ArgumentError, 'You must provide an expiration time or a duration window.'
@@ -130,7 +139,7 @@ class AkamaiToken
     bin_key = Array(config[:key].gsub(/\s/,'')).pack("H*")
 
     # Generate the hash
-    digest = OpenSSL::Digest::Digest.new(config[:algo])
+    digest = OpenSSL::Digest.new(config[:algo])
     hmac = OpenSSL::HMAC.new(bin_key, digest)
     hmac.update(token_pieces.join(config[:field_delimiter]))
 
