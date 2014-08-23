@@ -98,9 +98,9 @@ class AkamaiToken
       token_pieces[token_pieces.length] = 'ip=%s' % config[:ip]
     end
     if config[:start_time] != nil
-      token_pieces[token_pieces.length] = 'st=%s' % config[:start_time]
+      token_pieces[token_pieces.length] = 'st=%s' % config[:start_time].to_i
     end
-    token_pieces[token_pieces.length] = 'exp=%s' % config[:end_time]
+    token_pieces[token_pieces.length] = 'exp=%s' % config[:end_time].to_i
     if config[:acl] != nil
       if config[:escape_early]
         token_pieces[token_pieces.length] = 'acl=%s' % CGI::escape(config[:acl]).gsub(/(%..)/) {$1.downcase}
