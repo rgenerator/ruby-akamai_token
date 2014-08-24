@@ -35,15 +35,17 @@ class AkamaiToken
   VERSION = "0.0.1"
   ALGORITHMS =  %w[sha256 md5 sha1].freeze
 
-  def initialize(key, defaults = {})
+  def initialize(key, defaults = {}) # keep
     raise ArgumentError, 'missing or invalid key' if !key.is_a?(String) || key.strip.empty?
     @key = key
     @defaults = defaults
   end
 
-  def create(config)
+  # Implement using v1 algorithm
+
+  def create(config) # keep
     config = @defaults.merge(config)
-    config[:key] = @key
+    config[:key] = @key #key will be the salt parameter
     setup(config)
     build_token(config)
   end
