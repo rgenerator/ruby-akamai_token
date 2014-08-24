@@ -14,7 +14,7 @@ class AkamaiTokenV1
   end
 
   # Implement using v1 algorithm
-
+  # expects config to have the following keys => :url, :key, :extract, :window, :time. Note, :extract is optional.
   def create(config) # keep
     config = @defaults.merge(config)
     config[:key] = @key #key will be the salt parameter
@@ -38,10 +38,12 @@ class AkamaiTokenV1
     
     md5 = OpenSSL::Digest::MD5.new
     
+    # hash
     first_digest = first_md5_hash(md5, exp_bytes, url, extract, salt)
     temp_bytes = create_temp_bytes(first_digest)
     second_digest = second_md5_hash(md5, salt, temp_bytes)
 
+    # generate token
     token = second_digest.to_s
   end
 
