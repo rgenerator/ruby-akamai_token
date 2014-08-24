@@ -14,7 +14,7 @@ class AkamaiTokenV1
   end
 
   # Implement using v1 algorithm
-  # expects config to have the following keys => :url, :key, :extract, :window, :time. Note, :extract is optional.
+  # expects config to have the following keys => :url, :key, :extract, :window, :time. Note, :extract is optional.  
   def create(config) # keep
     config = @defaults.merge(config)
     config[:key] = @key #key will be the salt parameter
