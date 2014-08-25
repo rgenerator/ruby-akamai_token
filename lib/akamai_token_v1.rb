@@ -26,6 +26,7 @@ class AkamaiTokenV1
 
     #initialize variables
     url = config[:url]
+    param = config[:param] || '__gda__'
     salt = config[:key]
     extract = config[:extract]
     window = config[:window]
@@ -44,8 +45,7 @@ class AkamaiTokenV1
     puts "temp_bytes: #{temp_bytes}"
     second_digest = second_md5_hash(md5, salt, temp_bytes)
     puts "second_digest: #{second_digest}"
-
-    second_digest
+    "#{url}?#{param}=#{expires}_#{second_digest}"
   end
 
   def validate_input(config)
@@ -66,10 +66,10 @@ class AkamaiTokenV1
 
 
   def first_md5_hash(md5, exp_bytes, url, extract, salt)
-    md5 << exp_bytes
-    md5 << url.bytes
-    md5 << extract.bytes if (extract && extract.length > 0)
-    md5 << salt.bytes
+    update_md5(md5, exp_bytes)
+    update_md5(md5, url.bytes)
+    update_md5(md5, extract.bytes) if (extract && extract.length > 0)
+    update_md5(md5, salt.bytes)
     md5.hexdigest
   end
 
@@ -81,8 +81,12 @@ class AkamaiTokenV1
 
   def second_md5_hash(md5, salt, temp_bytes)
     md5.reset
-    md5 << salt.bytes
-    md5 << temp_bytes
+    update_md5(md5, salt.bytes)
+    update_md5(md5, temp_bytes)
     md5.hexdigest
+  end
+
+  def update_md5(md5, collection)
+    collection.each { |elem| md5 << elem.to_s }
   end
 end
