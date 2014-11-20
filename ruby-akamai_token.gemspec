@@ -12,5 +12,6 @@ Gem::Specification.new do |s|
   s.email       = 'dev@rgenerator.com'
   s.files       = Dir['lib/**/*.rb']
   s.homepage    = 'https://github.com/rgenerator/ruby-akamai_token'
+  s.require_paths = ["lib"]
   #s.license     = ''
 end
